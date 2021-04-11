@@ -15,16 +15,16 @@ typedef struct s_StackList {
 //!list.c
 STACK * AddElement(STACK*, char *);
 void PrintList(STACK*);
-void Table(STACK*, long*);
+void Table(STACK*);
 long CheckBase(char*);
-void ListFiltering (STACK*, long *);
+STACK* ListFiltering (STACK*);
 void DeleteElement(STACK*);
 
 //!consoledata.c
-int ScanFromConsole(STACK *);
+STACK * ScanFromConsole(STACK *);
 
 //!filedata.c
-int ScanFromFile(STACK *);
+STACK * ScanFromFile(STACK *);
 int OpenFile(char *);
 void CloseFile();
 

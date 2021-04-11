@@ -3,6 +3,8 @@
 #include <string.h>
 #include "../Headers/inform.h"
 
+long *decimal = NULL;                                                    //!Array of decimal values
+
 //!Create a new element in list
 //!Parameters: pointer to previous element and an input information
 //!Return: pointer to new element
@@ -17,12 +19,12 @@ STACK * AddElement(STACK* prev, char *sent)
     return new;
 }
 //!Check each item and delete the ones that are wrong
-//!Parameters: pointer to start element of the list and array of decimal values
-void ListFiltering (STACK* start, long *decimal)
+//!Parameters: pointer to start element of the list
+STACK* ListFiltering (STACK* start)
 {
     int kst = 0;
     STACK * current = start, *prev = start, *delete;                   //!Set pointer to first element of list
-    decimal = (long*)malloc(sizeof(long));                               //!Get memory for decimal values array
+    decimal = (long*)malloc(sizeof(long));                            //!Get memory for decimal values array
     while (current != NULL)
     {
         long * check, temp;
@@ -34,15 +36,18 @@ void ListFiltering (STACK* start, long *decimal)
             if(check == NULL)
             {
                 printf("Not enough memory to write a new decimal value\n");
-                return;
+                break;
             }
-            decimal = check;
+            decimal = check;                                               //!Set new address in dynamic memory
             decimal[kst-1] = temp;                                        //!Set number in array
-        }else if(*decimal == 0)                                           //!If true - delete element
+        }
+        if(temp == 0)                                           //!If true - delete element
         {
             delete = current;                                  //!Get address of element to delete
             current = current->next;                           //!Set address to the next element
-            prev->next = delete->next;                         //!Connect next element to previous
+            prev->next = current;                             //!Connect next element to previous
+            if(start == delete)
+                start = current;                                  //!Save the start of the list
             delete->next = NULL;                               //!Detach element from list
             DeleteElement(delete);
         }else
@@ -51,6 +56,7 @@ void ListFiltering (STACK* start, long *decimal)
             current = current->next;                                  //!Set pointer to next element
         }
     }
+    return start;
 }
 //!Print all list console
 //!Parameters: pointer to start of the list
@@ -62,15 +68,15 @@ void PrintList(STACK* start)
     PrintList(start->next);
 }
 //!Print table with results in console
-//!Parameters: pointer to start of the list and pointer to the array of numbers
-void Table(STACK* start, long* array)
+//!Parameters: pointer to start of the list
+void Table(STACK* start)
 {
     STACK *temp = start;
     int count = 0;
     printf("Decimal values\tSentence\n");
     while (temp != NULL)
     {
-        printf("%14lu\t%s", array[count], temp->data.sent);
+        printf(" %-14lu\t%s\n", decimal[count], temp->data.sent);
         count++;
         temp = temp->next;
     }
@@ -81,8 +87,10 @@ void Table(STACK* start, long* array)
 long CheckBase(char* str)
 {
     long number = 0;
-    char **end = NULL;
-    number = strtol(str, end, 5);
+    char *end = NULL;
+    number = strtol(str, &end, 5);
+    if(*end != '\0')
+        number = 0;
     return number;
 }
 //!Delete list and free dynamic memory

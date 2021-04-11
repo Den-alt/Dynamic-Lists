@@ -11,10 +11,9 @@ FILE * f_DataFile = NULL;                                       //!Pointer to st
 //!Get data from file
 //!Parameters: Pointer to element of the list
 //!Return: a real number of elements
-int ScanFromFile(STACK * start)
+STACK *ScanFromFile(STACK * start)
 {
     char path[P_LENGTH];
-    int num = 0;                                                        //!Real number of elements
     do {
         printf("\nEnter the path to your file: ");
         gets(path);                                                     //!Get path to file
@@ -43,12 +42,11 @@ int ScanFromFile(STACK * start)
         {
             str[S_LENGTH-1] = '\0';
             start = AddElement(start, str);                                 //!Add element to list
-            num++;                                                          //!Update number of file
         }
         free(str);
     }
     CloseFile();                                                            //!Close file stream
-    return num;
+    return start;
 }
 
 //!Open file
